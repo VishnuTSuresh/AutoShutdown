@@ -38309,15 +38309,20 @@ var TimeTool = (function () {
         this.popup = this.start.clone().subtract(15, "minutes");
         this.popup_showed = false;
     }
-    TimeTool.prototype.shouldShutdown = function (hourOrTime, minute) {
-        var now_time;
-        if (_.isNumber(hourOrTime)) {
-            now_time = moment("12-25-1995", "MM-DD-YYYY").hour(hourOrTime).minute(minute);
+    TimeTool.prototype.getMoment = function (hourOrTime, minute) {
+        if (hourOrTime === undefined && minute === undefined) {
+            return moment("12-25-1995", "MM-DD-YYYY");
+        }
+        else if (_.isNumber(hourOrTime)) {
+            return moment("12-25-1995", "MM-DD-YYYY").hour(hourOrTime).minute(minute);
         }
         else {
-            return this.shouldShutdown(hourOrTime.hour(), hourOrTime.minute());
+            return this.getMoment(hourOrTime.hour(), hourOrTime.minute());
         }
+    };
+    TimeTool.prototype.shouldShutdown = function (hourOrTime, minute) {
         var shutdown = false;
+        var now_time = this.getMoment(hourOrTime, minute);
         var shutdown_time = this.start;
         var wakeup_time = this.end;
         if (shutdown_time.isBefore(wakeup_time)) {
@@ -38333,13 +38338,7 @@ var TimeTool = (function () {
         return shutdown;
     };
     TimeTool.prototype.shouldShowPopup = function (hourOrTime, minute) {
-        var now_time;
-        if (_.isNumber(hourOrTime)) {
-            now_time = moment("12-25-1995", "MM-DD-YYYY").hour(hourOrTime).minute(minute);
-        }
-        else {
-            return this.shouldShowPopup(hourOrTime.hour(), hourOrTime.minute());
-        }
+        var now_time = this.getMoment(hourOrTime, minute);
         var shouldShowPopup = false;
         var popup_time = this.popup;
         var shutdown_time = this.start;
