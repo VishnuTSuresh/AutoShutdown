@@ -15039,8 +15039,8 @@ var TimeTool = (function () {
         var now_time = this.getMoment(hourOrTime, minute);
         var shouldShowPopup = false;
         var popup_time = this.popup;
-        var shutdown_time = this.start;
-        if (now_time.isBetween(popup_time, shutdown_time)) {
+        var wakeup_time = this.end;
+        if (now_time.isBetween(popup_time, wakeup_time)) {
             if (this.popup_showed === false) {
                 this.popup_showed = true;
                 shouldShowPopup = true;

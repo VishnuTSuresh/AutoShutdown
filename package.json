@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "build app":"webpack --progress --colors",
-    "test": "webpack --progress --colors --config=test.config.js && mocha ./tmp/test.js",
-    "watch and build test file": "webpack --progress --colors --watch --config=test.config.js",
+    "build app":"webpack --config=./config/build.config.js --progress --colors",
+    "test": "webpack --progress --colors --config=./config/test.config.js && mocha ./tmp/test.js",
+    "watch and build test file": "webpack --progress --colors --watch --config=./config/test.config.js",
     "watch and run test": "mocha --watch ./tmp/test.js"
   },
   "dependencies": {
