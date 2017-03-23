@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import * as jsonfile from 'jsonfile';
 import * as _ from 'lodash';
 import { TimeTool } from './TimeTool';
+import { Server } from "./Server";
 
 let settings = jsonfile.readFileSync("settings.json");
 let from = settings.from;
@@ -24,5 +25,7 @@ function tick() {
         }
     }
 }
+var server = new Server();
+server.start();
 tick()
 setInterval(tick, 1000);
