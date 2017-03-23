@@ -1,8 +1,9 @@
 {
   "scripts": {
-    "test": "webpack --progress --colors --config=test.config.js && mocha ./test.js",
-    "build:test:watch": "webpack --progress --colors --watch --config=test.config.js",
-    "test:watch": "mocha --watch ./test.js"
+    "build app":"webpack --progress --colors",
+    "test": "webpack --progress --colors --config=test.config.js && mocha ./tmp/test.js",
+    "watch and build test file": "webpack --progress --colors --watch --config=test.config.js",
+    "watch and run test": "mocha --watch ./tmp/test.js"
   },
   "dependencies": {
     "@types/lodash": "^4.14.57",
