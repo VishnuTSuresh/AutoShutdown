@@ -73,14 +73,18 @@
 
 var Handlebars = __webpack_require__(194);
 function __default(obj) { return obj && (obj.__esModule ? obj["default"] : obj); }
-module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+module.exports = (Handlebars["default"] || Handlebars).template({"1":function(container,depth0,helpers,partials,data) {
+    return "      <button id=\"snooze\">Snooze for 1 hour</button>\r\n";
+},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=container.lambda, alias2=container.escapeExpression;
 
-  return "<div class=\"panel panel-default\">\r\n  <div class=\"panel-body\">\r\n    <h3>Your computer will shutdown at "
+  return "<div>\r\n  <div class=\"panel panel-default\">\r\n    <div class=\"panel-body\">\r\n      <h3>Your computer will shutdown at "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.from : depth0)) != null ? stack1.hour : stack1), depth0))
     + ":"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.from : depth0)) != null ? stack1.minute : stack1), depth0))
-    + "</h3>\r\n  </div>\r\n</div>";
+    + "</h3>\r\n"
+    + ((stack1 = helpers.unless.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.is_snooze_enabled : depth0),{"name":"unless","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "    </div>\r\n  </div>\r\n</div>";
 },"useData":true});
 
 /***/ }),
@@ -11407,19 +11411,49 @@ function appendContextPath(contextPath, id) {
 
 "use strict";
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var $ = __webpack_require__(151);
 var indextemplate = __webpack_require__(150);
-$(function () {
-    var infopane = $("<div></div>").appendTo("body");
+var settings = {
+    from: undefined,
+    is_snooze_enabled: false
+};
+;
+function fetch_settings_from_server_and_render(resolve) {
     $.get("info", function (info) {
-        infopane.html(indextemplate({
-            from: {
-                hour: info.from.hour,
-                minute: info.from.minute
-            }
-        }));
+        settings = {
+            from: info.from,
+            is_snooze_enabled: info.is_snooze_enabled || false
+        };
+        render();
     });
+}
+function snooze() {
+    $.post("snooze", function () {
+        fetch_settings_from_server_and_render();
+    });
+}
+function render() {
+    var from = settings.from, is_snooze_enabled = settings.is_snooze_enabled;
+    var body = $("body").empty();
+    if (from) {
+        body.html(indextemplate({
+            from: {
+                hour: from.hour,
+                minute: from.minute,
+            },
+            is_snooze_enabled: is_snooze_enabled
+        }));
+        if (!is_snooze_enabled) {
+            body.find("#snooze").click(function () {
+                snooze();
+            });
+        }
+    }
+}
+$(function () {
+    render();
+    fetch_settings_from_server_and_render();
 });
 
 

@@ -8,13 +8,18 @@ import * as _ from 'lodash';
 class TimeTool {
     private start:Moment
     private end:Moment
-    private popup:Moment
-    private popup_showed:boolean;
+    private is_snooze_enabled:boolean
+    private get shutdown_time():Moment{
+        return this.is_snooze_enabled?this.start.clone().add(1,"hour"):this.start.clone();
+    }
+    private get popup():Moment{
+        return this.shutdown_time.clone().subtract(15,"minutes");
+    }
+    private popup_showed:boolean
 
     constructor(start_hour:number,start_minute:number,end_hour:number,end_minute:number) {
         this.start=moment("12-25-1995", "MM-DD-YYYY").hour(start_hour).minute(start_minute);
         this.end=moment("12-25-1995", "MM-DD-YYYY").hour(end_hour).minute(end_minute);
-        this.popup=this.start.clone().subtract(15,"minutes");
         this.popup_showed=false;
     }
     private getMoment(hourOrTime?:number|Moment,minute?:number):Moment{
@@ -33,7 +38,7 @@ class TimeTool {
     shouldShutdown(hourOrTime?:number|Moment,minute?:number):boolean{
         let shutdown=false;
         const now_time:Moment=this.getMoment(hourOrTime,minute);
-        const shutdown_time:Moment=this.start;
+        const shutdown_time:Moment=this.shutdown_time;
         const wakeup_time:Moment=this.end;
         
         if(shutdown_time.isBefore(wakeup_time)){
@@ -50,7 +55,7 @@ class TimeTool {
 
     shouldShowPopup(hour:number,minute:number):boolean;
     shouldShowPopup(time:Moment):boolean;
-    shouldShowPopup():boolean;
+    shouldShowPopup():boolean; 
 
     shouldShowPopup(hourOrTime?:number|Moment,minute?:number):boolean{
         const now_time:Moment=this.getMoment(hourOrTime,minute);
@@ -68,6 +73,12 @@ class TimeTool {
             }
         }
         return shouldShowPopup;
+    }
+    snooze():void{
+        this.is_snooze_enabled=true;
+    }
+    getShutdownTime():Moment{
+        return this.shutdown_time;
     }
 }
 

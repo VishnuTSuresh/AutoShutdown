@@ -1,5 +1,10 @@
-<div class="panel panel-default">
-  <div class="panel-body">
-    <h3>Your computer will shutdown at {{from.hour}}:{{from.minute}}</h3>
+<div>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <h3>Your computer will shutdown at {{from.hour}}:{{from.minute}}</h3>
+      {{#unless is_snooze_enabled}}
+      <button id="snooze">Snooze for 1 hour</button>
+      {{/unless}}
+    </div>
   </div>
 </div>

@@ -26,6 +26,11 @@ function tick() {
     }
 }
 var server = new Server(settings);
+server.onSnooze=()=>{
+    timetool.snooze();
+    settings.is_snooze_enabled=true;
+    settings.from.hour=timetool.getShutdownTime().hour();
+}
 server.start();
 tick()
 setInterval(tick, 1000);

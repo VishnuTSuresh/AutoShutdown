@@ -20702,7 +20702,7 @@ function escape(s) {
 
 "use strict";
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var express = __webpack_require__(166);
 var Server = (function () {
     function Server(settings) {
@@ -20713,12 +20713,14 @@ var Server = (function () {
         var app = express();
         app.use(express.static('.'));
         app.post('/snooze', function (req, res) {
-            res.send('Hello World!');
+            _this.onSnooze();
+            res.send({ "ok": true });
         });
         app.get('/info', function (req, res) {
             res.send({
                 "from": _this.settings.from,
-                "to": _this.settings.to
+                "to": _this.settings.to,
+                "is_snooze_enabled": _this.settings.is_snooze_enabled || false
             });
         });
         app.listen(this.settings.port, function () {
@@ -20728,7 +20730,7 @@ var Server = (function () {
     return Server;
 }());
 exports.Server = Server;
-exports["default"] = Server;
+exports.default = Server;
 
 
 /***/ }),
@@ -20737,16 +20739,29 @@ exports["default"] = Server;
 
 "use strict";
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var moment = __webpack_require__(0);
 var _ = __webpack_require__(199);
 var TimeTool = (function () {
     function TimeTool(start_hour, start_minute, end_hour, end_minute) {
         this.start = moment("12-25-1995", "MM-DD-YYYY").hour(start_hour).minute(start_minute);
         this.end = moment("12-25-1995", "MM-DD-YYYY").hour(end_hour).minute(end_minute);
-        this.popup = this.start.clone().subtract(15, "minutes");
         this.popup_showed = false;
     }
+    Object.defineProperty(TimeTool.prototype, "shutdown_time", {
+        get: function () {
+            return this.is_snooze_enabled ? this.start.clone().add(1, "hour") : this.start.clone();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(TimeTool.prototype, "popup", {
+        get: function () {
+            return this.shutdown_time.clone().subtract(15, "minutes");
+        },
+        enumerable: true,
+        configurable: true
+    });
     TimeTool.prototype.getMoment = function (hourOrTime, minute) {
         if (hourOrTime === undefined && minute === undefined) {
             return moment("12-25-1995", "MM-DD-YYYY");
@@ -20761,7 +20776,7 @@ var TimeTool = (function () {
     TimeTool.prototype.shouldShutdown = function (hourOrTime, minute) {
         var shutdown = false;
         var now_time = this.getMoment(hourOrTime, minute);
-        var shutdown_time = this.start;
+        var shutdown_time = this.shutdown_time;
         var wakeup_time = this.end;
         if (shutdown_time.isBefore(wakeup_time)) {
             if (now_time.isBetween(shutdown_time, wakeup_time)) {
@@ -20793,10 +20808,16 @@ var TimeTool = (function () {
         }
         return shouldShowPopup;
     };
+    TimeTool.prototype.snooze = function () {
+        this.is_snooze_enabled = true;
+    };
+    TimeTool.prototype.getShutdownTime = function () {
+        return this.shutdown_time;
+    };
     return TimeTool;
 }());
 exports.TimeTool = TimeTool;
-exports["default"] = TimeTool;
+exports.default = TimeTool;
 
 
 /***/ }),
@@ -57243,7 +57264,7 @@ module.exports = {
 
 "use strict";
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var child_process_1 = __webpack_require__(22);
 var open = __webpack_require__(153);
 var moment = __webpack_require__(0);
@@ -57267,6 +57288,11 @@ function tick() {
     }
 }
 var server = new Server_1.Server(settings);
+server.onSnooze = function () {
+    timetool.snooze();
+    settings.is_snooze_enabled = true;
+    settings.from.hour = timetool.getShutdownTime().hour();
+};
 server.start();
 tick();
 setInterval(tick, 1000);

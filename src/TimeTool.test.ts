@@ -32,5 +32,26 @@ describe("TimeTool",()=>{
         it("returns true only once even if within popup time",()=>{
             expect([t1.shouldShowPopup(0,50),t1.shouldShowPopup(0,55)]).to.eql([true,false]);
         });
-    }); 
+    });
+    describe("getShutdownTime",()=>{
+        beforeEach(()=>{
+            t1=new TimeTool(1,0,6,0);
+        });
+        it("returns the start time if no snooze",()=>{
+            expect(t1.getShutdownTime().format("h:m")).to.equal("1:0");
+        });
+        it("returns the start time plus one hour if snooze is enabled",()=>{
+            t1.snooze();
+           expect(t1.getShutdownTime().format("h:m")).to.deep.equal("2:0");
+        });
+    });
+    describe("snooze",()=>{
+        beforeEach(()=>{
+            t1=new TimeTool(1,0,6,0);
+        });
+        it("moves shutdown time by one hour",()=>{
+            t1.snooze();
+           expect(t1.getShutdownTime().format("h:m")).to.deep.equal("2:0");
+        });
+    });
 }); 

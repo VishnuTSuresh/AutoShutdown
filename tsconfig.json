@@ -3,7 +3,8 @@
         "module": "commonjs",
         "removeComments": true,
         "preserveConstEnums": true,
-        "sourceMap": true
+        "sourceMap": true,
+        "target": "es5"
     },
     "include": [
         "src/**/*"
