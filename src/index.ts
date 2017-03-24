@@ -18,14 +18,14 @@ function tick() {
     const now_time = moment();
     if (now_time.diff(app_start_time, "minutes") >= 1) {
         if (timetool.shouldShowPopup(now_time)) {
-            open("https://output.jsbin.com/popapi");
+            open("http://localhost:"+settings.port);
         }
         if (timetool.shouldShutdown(now_time)) {
             spawn("shutdown", ["-s"]);
         }
     }
 }
-var server = new Server();
+var server = new Server(settings);
 server.start();
 tick()
 setInterval(tick, 1000);

@@ -1,21 +1,27 @@
 /**
  * name
  */
-var express = require('express')
+import * as express from 'express';
 
 class Server {
-    constructor() {
-        
+    private settings
+    constructor(settings) {
+        this.settings=settings;
     }
     start(){
         var app = express()
         app.use(express.static('.'))
         app.post('/snooze', function (req, res) {
-            res.send('Hello World!')
+            res.send('Hello World!');
         })
-
-        app.listen(3000, function () {
-            console.log('Example app listening on port 3000!')
+        app.get('/info', (req, res)=>{
+            res.send({
+                "from":this.settings.from,
+                "to":this.settings.to
+            });
+        })
+        app.listen(this.settings.port, ()=>{
+            console.log('Example app listening on port '+this.settings.port+'!')
         })
     }
 }

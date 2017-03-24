@@ -2,9 +2,12 @@ var webpackConfig = require("./common.config.js");
 var path = require("path");
 
 Object.assign(webpackConfig, {
-    entry: "./src/index.ts",
+    entry: {
+        index:"./src/index.ts",
+        ui:"./src/ui.ts"
+    },
     output: {
-        filename: "index.js",
+        filename: "[name].js",
         path: path.resolve('./dist')
     },
 });
