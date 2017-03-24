@@ -62,7 +62,8 @@ class TimeTool {
         let shouldShowPopup:boolean=false;
         const popup_time:Moment=this.popup;
         const wakeup_time:Moment=this.end;
-        if(now_time.isBetween(popup_time,wakeup_time)){
+        const shutdown_time:Moment=this.shutdown_time;
+        if(now_time.isBetween(popup_time,shutdown_time)||this.shouldShutdown(now_time)){
             if(this.popup_showed===false){
                 this.popup_showed=true;
                 shouldShowPopup=true;

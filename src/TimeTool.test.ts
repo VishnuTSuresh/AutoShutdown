@@ -24,7 +24,8 @@ describe("TimeTool",()=>{
             return [t1.shouldShowPopup(t1h,t1m),t2.shouldShowPopup(t2h,t2m)]
         }
         it("returns true if time is within popup time",()=>{
-            expect(f(0,50,3,50)).to.eql([true,true]);
+            let t3=new TimeTool(21,30,6,0);
+            expect([t1.shouldShowPopup(0,50),t2.shouldShowPopup(3,50),t3.shouldShowPopup(21,16)]).to.eql([true,true,true]); 
         });
         it("returns false if time is outside popup time",()=>{
             expect(f(0,40,6,10)).to.eql([false,false]);

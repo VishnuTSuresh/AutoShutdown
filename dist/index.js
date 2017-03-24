@@ -20795,7 +20795,8 @@ var TimeTool = (function () {
         var shouldShowPopup = false;
         var popup_time = this.popup;
         var wakeup_time = this.end;
-        if (now_time.isBetween(popup_time, wakeup_time)) {
+        var shutdown_time = this.shutdown_time;
+        if (now_time.isBetween(popup_time, shutdown_time) || this.shouldShutdown(now_time)) {
             if (this.popup_showed === false) {
                 this.popup_showed = true;
                 shouldShowPopup = true;

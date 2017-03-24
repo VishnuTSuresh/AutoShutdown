@@ -15,7 +15,7 @@ class Server {
         app.post('/snooze', (req, res)=>{
             this.onSnooze();
             res.send({"ok":true})
-        })
+        }) 
         app.get('/info', (req, res)=>{
             res.send({
                 "from":this.settings.from,
